@@ -2,6 +2,8 @@ package com.example.TrackQuestGPS.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadNewsItems() {
-        String apiKey = "635910aca070a3aabe68caff623ca9ad"; // replace with your actual GNews key
+        String apiKey = "635910aca070a3aabe68caff623ca9ad"; // Replace with your actual GNews API key
         String url = "https://gnews.io/api/v4/top-headlines?lang=en&country=us&max=10&apikey=" + apiKey;
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -68,20 +70,32 @@ public class MainActivity extends AppCompatActivity {
 
                         for (int i = 0; i < articles.length(); i++) {
                             JSONObject article = articles.getJSONObject(i);
-                            String title = article.getString("title");
+                            String title = article.optString("title", "Untitled");
                             String description = article.optString("description", "No description available");
                             String imageUrl = article.optString("image", "");
+                            String newsUrl = article.optString("url", "");
 
-                            newsList.add(new NewsItem(title, description, imageUrl));
+                            // Ensure URL is properly formatted
+                            if (!newsUrl.startsWith("http://") && !newsUrl.startsWith("https://")) {
+                                newsUrl = "https://" + newsUrl;
+                            }
+
+                            // Debugging: Log extracted data
+                            Log.d("News Fetch", "Title: " + title + ", URL: " + newsUrl);
+
+                            newsList.add(new NewsItem(title, description, imageUrl, newsUrl));
                         }
 
                         adapter.notifyDataSetChanged();
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.e("News Fetch", "Error parsing news JSON", e);
                         Toast.makeText(MainActivity.this, "Failed to parse news", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(MainActivity.this, "Error fetching news", Toast.LENGTH_SHORT).show()
+                error -> {
+                    Log.e("News Fetch", "Error fetching news", error);
+                    Toast.makeText(MainActivity.this, "Error fetching news", Toast.LENGTH_SHORT).show();
+                }
         );
 
         queue.add(request);
@@ -110,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void BottomNavigation() {
-        LinearLayout profileButton = findViewById(R.id.profileBtn);
+        ImageView profileButton = findViewById(R.id.profileBtn);
         profileButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
     }
 }

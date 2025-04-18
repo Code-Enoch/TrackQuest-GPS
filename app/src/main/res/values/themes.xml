@@ -1,9 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.GPSApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/dark_blue</item>
+        <!-- Fixed `colorPrimary` and `colorPrimaryVariant` references -->
+        <item name="colorPrimary">@color/dark_blue</item>
         <item name="colorPrimaryVariant">@color/dark_blue</item>
+
+        <!-- Added additional colors from `colors.xml` -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/background</item>
     </style>
 
     <style name="Theme.GPSApp" parent="Base.Theme.GPSApp" />
