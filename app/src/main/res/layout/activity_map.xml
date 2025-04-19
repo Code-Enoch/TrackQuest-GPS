@@ -1,39 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.MapActivity">
+    tools:context=".Activity.MapActivity"
+    tools:ignore="UnknownFragment">
 
-    <!-- Google Map Fragment -->
+    <!-- 🗺️ Google Map Fragment -->
     <fragment
         android:id="@+id/id_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="MissingConstraints,UnknownFragment" />
+        android:layout_alignParentTop="true" />
 
-    <!-- Route Info Overlay at Bottom -->
-    <LinearLayout
-        android:id="@+id/route_info_container"
+    <!-- 🔍 Autocomplete Search Bar (offset to avoid Google UI controls) -->
+    <fragment
+        android:id="@+id/autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/route_info_background"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentTop="true"
+        tools:ignore="MissingConstraints,UnknownFragment" />
+
+    <!-- 🚦 Mode Selector -->
+    <RadioGroup
+        android:id="@+id/mode_selector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/rounded_mode_background"
+        android:padding="8dp">
+
+        <android.widget.RadioButton
+            android:id="@+id/driving"
+            android:text="🚗"
+            android:checked="true"
+            android:buttonTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="6dp" />
+
+        <android.widget.RadioButton
+            android:id="@+id/walking"
+            android:text="🚶"
+            android:buttonTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="6dp" />
+
+        <android.widget.RadioButton
+            android:id="@+id/bicycling"
+            android:text="🚴"
+            android:buttonTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="6dp" />
+
+        <android.widget.RadioButton
+            android:id="@+id/transit"
+            android:text="🚌"
+            android:buttonTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="6dp" />
+    </RadioGroup>
+
+    <!-- 📍 Route Info Display -->
+    <TextView
+        android:id="@+id/route_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/autocomplete_background"
         android:padding="16dp"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/route_info_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Route info will show here"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
-    </LinearLayout>
-
-</FrameLayout>
+        android:text="Route info will show here"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+</RelativeLayout>
