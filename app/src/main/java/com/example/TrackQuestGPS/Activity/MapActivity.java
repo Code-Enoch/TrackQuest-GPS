@@ -121,7 +121,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
         String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
         String strDest = "destination=" + dest.latitude + "," + dest.longitude;
-        String key = "YOUR_API_KEY"; // 🔑 Replace with your actual API key
+        String key = "AIzaSyAf8GQsATJD2TOKo8tXt28UAuiBluc8CE0"; // 🔑 Replace with your actual API key
         String parameters = strOrigin + "&" + strDest + "&key=" + key;
         return "https://maps.googleapis.com/maps/api/directions/json?" + parameters;
     }
