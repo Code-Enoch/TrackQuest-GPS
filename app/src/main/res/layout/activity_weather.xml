@@ -163,13 +163,14 @@
                         android:contentDescription="Rain Icon" />
 
                     <TextView
-                        android:id="@+id/rainText"
+                        android:id="@+id/humidityText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20%"
-                        android:textSize="16sp"
+                        android:layout_marginTop="4dp"
+                        android:text="65%"
                         android:textColor="@color/white"
-                        android:layout_marginTop="4dp" />
+                        android:textSize="16sp" />
+
                 </LinearLayout>
 
                 <!-- Humidity -->
@@ -188,13 +189,14 @@
                         android:contentDescription="Humidity Icon" />
 
                     <TextView
-                        android:id="@+id/humidityText"
+                        android:id="@+id/rainText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="65%"
-                        android:textSize="16sp"
+                        android:layout_marginTop="4dp"
+                        android:text="20%"
                         android:textColor="@color/white"
-                        android:layout_marginTop="4dp" />
+                        android:textSize="16sp" />
+
                 </LinearLayout>
 
                 <!-- Wind Speed -->
@@ -221,6 +223,7 @@
                         android:textColor="@color/white"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 

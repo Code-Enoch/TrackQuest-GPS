@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GPSApp</string>
+    <string name="app_name">TrackQuest GPS</string>
     <string name="news_title">News Title</string>
     <string name="news_description">News Description</string>
     <string name="news_URL">Click here to open the article</string>

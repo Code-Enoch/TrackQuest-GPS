@@ -15,6 +15,21 @@
         android:layout_alignParentTop="true" />
 
     <!-- 🔍 Autocomplete Search Bar (offset to avoid Google UI controls) -->
+    <ImageButton
+        android:id="@+id/traffic_toggle_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="125dp"
+        android:layout_marginEnd="19dp"
+        android:background="@drawable/bg_map_button"
+        android:contentDescription="Toggle traffic"
+        android:elevation="8dp"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_traffic_on" />
+
     <fragment
         android:id="@+id/autocomplete_fragment"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
@@ -24,6 +39,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_alignParentTop="true"
+        android:textColor="@color/white"
         tools:ignore="MissingConstraints,UnknownFragment" />
 
     <!-- 🚦 Mode Selector -->

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private TextView routeInfo;
     private RadioGroup modeSelector;
     private String currentMode = "driving";
+    private boolean isTrafficEnabled = true;
+    private ImageButton trafficToggleButton;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private String API_KEY;
@@ -69,7 +72,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         findViewById(R.id.bicycling).setOnClickListener(v -> switchMode("bicycling"));
         findViewById(R.id.transit).setOnClickListener(v -> switchMode("transit"));
 
+        trafficToggleButton = findViewById(R.id.traffic_toggle_button);
+        trafficToggleButton.setOnClickListener(v -> toggleTraffic());
+
         initSearchBar();
+    }
+
+    private void toggleTraffic() {
+        isTrafficEnabled = !isTrafficEnabled;
+        if (mMap != null) {
+            mMap.setTrafficEnabled(isTrafficEnabled);
+        }
+        trafficToggleButton.setImageResource(
+                isTrafficEnabled ? R.drawable.ic_traffic_on : R.drawable.ic_traffic_off);
+        Toast.makeText(this,
+                isTrafficEnabled ? "Traffic ON" : "Traffic OFF",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void switchMode(String mode) {
@@ -119,6 +137,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setTrafficEnabled(isTrafficEnabled);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {

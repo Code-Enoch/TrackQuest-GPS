@@ -145,7 +145,7 @@
                                 android:layout_gravity="center"
                                 android:layout_margin="16dp"
                                 android:background="@drawable/background_oval_2"
-                                android:backgroundTint="#05F842">
+                                android:backgroundTint="#02AE2C">
 
                                 <ImageView
                                     android:id="@+id/imageView11"
