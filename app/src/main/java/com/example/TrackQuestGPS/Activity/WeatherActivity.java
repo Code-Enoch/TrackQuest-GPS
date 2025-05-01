@@ -7,20 +7,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.TrackQuestGPS.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -50,11 +46,9 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        // Initialize UI elements
-        ImageView weatherbackArrow = findViewById(R.id.weatherbackArrow); // Ensure this matches your layout XML
-
-        // Set click listener for back arrow
-        weatherbackArrow.setOnClickListener(v -> finish()); // Closes WeatherActivity
+        // Back arrow functionality
+        ImageView weatherbackArrow = findViewById(R.id.weatherbackArrow);
+        weatherbackArrow.setOnClickListener(v -> finish());
 
         // Initialize UI elements
         searchBar = findViewById(R.id.searchBar);
@@ -68,7 +62,7 @@ public class WeatherActivity extends AppCompatActivity {
         windText = findViewById(R.id.windText);
         weatherIcon = findViewById(R.id.weatherIcon);
 
-        // Initialize RecyclerView
+        // Initialize RecyclerView for forecast
         forecastRecyclerView = findViewById(R.id.forecastRecyclerView);
         forecastRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -79,8 +73,16 @@ public class WeatherActivity extends AppCompatActivity {
         // Initialize Location Client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Fetch current location weather on app start
-        fetchCurrentLocationWeather();
+        // Check for an externally provided search query from MainActivity
+        String passedCityQuery = getIntent().getStringExtra("searchBar");
+        if (passedCityQuery != null && !passedCityQuery.trim().isEmpty()) {
+            // Set the search bar's text and fetch weather for that city
+            searchBar.setText(passedCityQuery);
+            fetchWeatherForCity(passedCityQuery);
+        } else {
+            // If no query is provided, fetch weather based on the current location
+            fetchCurrentLocationWeather();
+        }
 
         // Search button functionality
         searchButton.setOnClickListener(v -> {
@@ -108,7 +110,6 @@ public class WeatherActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
-
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
                 double latitude = location.getLatitude();
@@ -123,7 +124,8 @@ public class WeatherActivity extends AppCompatActivity {
     private void fetchWeatherForCity(String cityName) {
         try {
             String apiKey = "57f091efab16d73d01ec6ebcabfdbddf"; // Replace with your API key
-            String urlString = "https://api.openweathermap.org/data/2.5/forecast?q=" + URLEncoder.encode(cityName, "UTF-8") + "&units=metric&appid=" + apiKey;
+            String urlString = "https://api.openweathermap.org/data/2.5/forecast?q="
+                    + URLEncoder.encode(cityName, "UTF-8") + "&units=metric&appid=" + apiKey;
             fetchWeatherFromAPI(urlString);
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,7 +135,8 @@ public class WeatherActivity extends AppCompatActivity {
     private void fetchWeatherByCoordinates(double latitude, double longitude) {
         try {
             String apiKey = "57f091efab16d73d01ec6ebcabfdbddf"; // Replace with your API key
-            String urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=" + apiKey;
+            String urlString = "https://api.openweathermap.org/data/2.5/forecast?lat="
+                    + latitude + "&lon=" + longitude + "&units=metric&appid=" + apiKey;
             fetchWeatherFromAPI(urlString);
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,12 +168,16 @@ public class WeatherActivity extends AppCompatActivity {
                 JSONArray forecastArray = jsonResponse.getJSONArray("list");
                 JSONObject currentWeather = forecastArray.getJSONObject(0);
                 String temp = currentWeather.getJSONObject("main").getString("temp") + "°C";
-                String weatherDesc = currentWeather.getJSONArray("weather").getJSONObject(0).getString("description");
-                String iconCode = currentWeather.getJSONArray("weather").getJSONObject(0).getString("icon");
+                String weatherDesc = currentWeather.getJSONArray("weather")
+                        .getJSONObject(0).getString("description");
+                String iconCode = currentWeather.getJSONArray("weather")
+                        .getJSONObject(0).getString("icon");
                 String iconUrl = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
                 String humidity = currentWeather.getJSONObject("main").getString("humidity") + "%";
                 String windSpeed = currentWeather.getJSONObject("wind").getString("speed") + " km/h";
-                String rainChance = currentWeather.has("rain") ? currentWeather.getJSONObject("rain").optString("1h", "0 mm") : "0 mm";
+                String rainChance = currentWeather.has("rain")
+                        ? currentWeather.getJSONObject("rain").optString("1h", "0 mm")
+                        : "0 mm";
 
                 // Update UI with current weather data
                 runOnUiThread(() -> {
@@ -188,16 +195,18 @@ public class WeatherActivity extends AppCompatActivity {
                 forecastList.clear();
                 for (int i = 0; i < forecastArray.length(); i++) {
                     JSONObject forecast = forecastArray.getJSONObject(i);
-
                     String dateTime = forecast.getString("dt_txt");
                     String date = dateTime.split(" ")[0];
                     String time = dateTime.split(" ")[1];
 
                     if (!addedDates.contains(date) && time.equals("12:00:00")) {
                         String forecastTemp = forecast.getJSONObject("main").getString("temp") + "°C";
-                        String forecastDesc = forecast.getJSONArray("weather").getJSONObject(0).getString("main");
-                        String forecastIconCode = forecast.getJSONArray("weather").getJSONObject(0).getString("icon");
-                        String forecastIconUrl = "https://openweathermap.org/img/wn/" + forecastIconCode + "@2x.png";
+                        String forecastDesc = forecast.getJSONArray("weather")
+                                .getJSONObject(0).getString("main");
+                        String forecastIconCode = forecast.getJSONArray("weather")
+                                .getJSONObject(0).getString("icon");
+                        String forecastIconUrl = "https://openweathermap.org/img/wn/"
+                                + forecastIconCode + "@2x.png";
 
                         forecastList.add(new ForecastModel(date, forecastDesc, forecastTemp, forecastIconUrl));
                         addedDates.add(date);

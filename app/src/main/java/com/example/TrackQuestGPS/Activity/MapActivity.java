@@ -55,6 +55,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        String searchQuery = getIntent().getStringExtra("search_query");
+
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+            if (autocompleteFragment != null) {
+                autocompleteFragment.setText(searchQuery);
+                // Used also to trigger place search manually here if needed
+            }
+        }
+
         API_KEY = getString(R.string.google_maps_key);
 
         if (!Places.isInitialized()) {

@@ -3,8 +3,12 @@ package com.example.TrackQuestGPS.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         MapNavigation();
         WeatherApp();
         TravelApp();
+        setupUniversalSearch();
 
         recyclerView = findViewById(R.id.recyclerViewNews);
         newsList = new ArrayList<>();
@@ -75,13 +80,9 @@ public class MainActivity extends AppCompatActivity {
                             String imageUrl = article.optString("image", "");
                             String newsUrl = article.optString("url", "");
 
-                            // Ensure URL is properly formatted
                             if (!newsUrl.startsWith("http://") && !newsUrl.startsWith("https://")) {
                                 newsUrl = "https://" + newsUrl;
                             }
-
-                            // Debugging: Log extracted data
-                            Log.d("News Fetch", "Title: " + title + ", URL: " + newsUrl);
 
                             newsList.add(new NewsItem(title, description, imageUrl, newsUrl));
                         }
@@ -99,6 +100,39 @@ public class MainActivity extends AppCompatActivity {
         );
 
         queue.add(request);
+    }
+
+    private void setupUniversalSearch() {
+        EditText searchBar = findViewById(R.id.homeSearchBar);
+
+        searchBar.setOnEditorActionListener((TextView v, int actionId, KeyEvent event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+
+                String query = v.getText().toString().trim();
+
+                if (query.isEmpty()) return true;
+
+                new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Choose Action")
+                        .setMessage("What would you like to do with \"" + query + "\"?")
+                        .setPositiveButton("View on Map", (dialog, which) -> {
+                            Intent mapIntent = new Intent(MainActivity.this, MapActivity.class);
+                            mapIntent.putExtra("search_query", query);
+                            startActivity(mapIntent);
+                        })
+                        .setNegativeButton("Check Weather", (dialog, which) -> {
+                            Intent weatherIntent = new Intent(MainActivity.this, WeatherActivity.class);
+                            weatherIntent.putExtra("searchBar", query);
+                            startActivity(weatherIntent);
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+
+                return true;
+            }
+            return false;
+        });
     }
 
     private void MapNavigation() {
